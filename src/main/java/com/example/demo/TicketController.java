@@ -23,16 +23,7 @@ import static org.jooq.impl.DSL.noCondition;
 public class TicketController {
     @Autowired
     public DSLContext dbContext;
-
-    @GetMapping("/hello")
-    public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-        TrainRecord train = dbContext.newRecord(Train.TRAIN);
-        train.setModel(name);
-        train.setPassengerCapacity(9);
-        train.store();
-        return String.format("Hello %s!", name);
-    }
-
+    
     @GetMapping("/trips")
     public LinkedList<HashMap<String, Object>> getTrips(
             @RequestParam(value = "start_city", defaultValue = "") String startCity,
