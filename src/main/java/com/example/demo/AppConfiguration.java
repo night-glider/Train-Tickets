@@ -1,13 +1,8 @@
 package com.example.demo;
 
-import com.example.demo.tables.Train;
-import com.example.demo.tables.records.TrainRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.RecordMapper;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.tools.json.JSONObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -4,14 +4,9 @@ import com.example.demo.tables.Route;
 import com.example.demo.tables.Ticket;
 import com.example.demo.tables.Train;
 import com.example.demo.tables.Trip;
-import com.example.demo.tables.records.TicketRecord;
 import com.example.demo.tables.records.TrainRecord;
-import com.example.demo.tables.records.TripRecord;
-import org.jooq.*;
-
-import static org.jooq.impl.DSL.*;
-
-import org.jooq.generated.pg_catalog.routines.Now;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import static org.jooq.impl.DSL.noCondition;
 
 @RestController
 public class TicketController {
@@ -37,7 +34,7 @@ public class TicketController {
     }
 
     @GetMapping("/trips")
-    public LinkedList<HashMap> getTrips(
+    public LinkedList<HashMap<String, Object>> getTrips(
             @RequestParam(value = "start_city", defaultValue = "") String startCity,
             @RequestParam(value = "finish_city", defaultValue = "") String finishCity,
             @RequestParam(value = "train_model", defaultValue = "") String trainModel) {
@@ -46,13 +43,13 @@ public class TicketController {
 
         cond = cond.and(Trip.TRIP.START_TIME.greaterThan(LocalDateTime.now()));
 
-        if(!trainModel.equals("")) {
+        if(!trainModel.isEmpty()) {
             cond = cond.and(Train.TRAIN.MODEL.eq(trainModel));
         }
-        if(!startCity.equals("")) {
+        if(!startCity.isEmpty()) {
             cond = cond.and(Route.ROUTE.START_CITY.eq(startCity));
         }
-        if(!finishCity.equals("")) {
+        if(!finishCity.isEmpty()) {
             cond = cond.and(Route.ROUTE.FINISH_CITY.eq(finishCity));
         }
 
@@ -65,7 +62,7 @@ public class TicketController {
 
         var result = query.fetch();
 
-        var return_res = new LinkedList< HashMap >();
+        var return_res = new LinkedList< HashMap<String, Object> >();
         for(var row : result) {
             var test = new HashMap<String, Object>();
             test.put("id", row.getValue("id"));
@@ -88,7 +85,7 @@ public class TicketController {
         var result = new HashMap<String, Object>();
         result.put("success", false);
 
-        if(passengerName.equals("")) {
+        if(passengerName.isEmpty()) {
             result.put("message", "Имя пассажира должно быть указано");
             return result;
         }
