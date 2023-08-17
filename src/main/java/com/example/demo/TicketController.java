@@ -155,6 +155,10 @@ public class TicketController {
 
         var trip = dbContext.fetchOne(Trip.TRIP, Trip.TRIP.ID.eq(ticket.getTripId()));
         assert trip != null;
+        if(trip.getStartTime().isBefore(LocalDateTime.now())) {
+            result.put("message", "Отправка уже свершилась. Отмена невозможна!");
+            return result;
+        }
         if(trip.getStartTime().minusHours(2).isBefore( LocalDateTime.now() )) {
             result.put("message", "До отправления осталось меньше 2 часов, отмена невозможна!");
             return result;
